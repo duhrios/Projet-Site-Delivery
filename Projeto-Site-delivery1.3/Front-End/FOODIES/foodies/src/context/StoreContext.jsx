@@ -1,6 +1,8 @@
 import  { createContext, useState, useEffect } from 'react';
 import axios from 'axios'
 
+import { addToCart, getCartData, removeQtyFromCart } from "../service/cartService";
+
 export const StoreContext = createContext(null);
 
 export const StoreContextProvider = (props) => {
@@ -10,13 +12,17 @@ export const StoreContextProvider = (props) => {
 
    const [quantities, setQuantities] = useState({});
 
-   const increaseQty = (foodId) => {
+   const increaseQty = async (foodId) => {
    setQuantities((prev) => ({...prev, [foodId]: (prev[foodId] || 0 )+1,}));
+
+  await addToCart(foodId, token);
 
    };
 
-   const decreaseQty = (foodId) => {
+   const decreaseQty = async (foodId) => {
    setQuantities((prev) => ({...prev, [foodId]: prev[foodId] > 0 ? prev[foodId] -1 : 0}))
+    
+   await removeQtyFromCart(foodId, token);
     
    };
 
@@ -27,6 +33,12 @@ export const StoreContextProvider = (props) => {
     delete updatedQuantities[foodId];
     return updatedQuantities;
    });
+   };
+
+   const loadCartData = async (token) => {
+    const items = await getCartData(token); 
+   setQuantities(items);
+   
    };
   
   const fetchFoodList = async () => {
@@ -46,7 +58,9 @@ export const StoreContextProvider = (props) => {
       quantities,
       removeFromCart,
       token,
-      setToken
+      setToken,
+      setQuantities,
+      loadCartData
    };
 
    useEffect(() => {
@@ -57,6 +71,7 @@ export const StoreContextProvider = (props) => {
     setFoodList(data);
       if (localStorage.getItem("token")) {
         setToken(localStorage.getItem("token"));
+       await loadCartData(localStorage.getItem("token"));
       }
       }
       loadData();

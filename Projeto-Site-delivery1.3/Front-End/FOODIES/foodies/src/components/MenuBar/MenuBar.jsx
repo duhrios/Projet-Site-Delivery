@@ -8,7 +8,7 @@ StoreContext;
 const MenuBar = () => {
 const [active, setActive] = useState('home');
 
-  const {quantities, token, setToken} = useContext(StoreContext);
+  const {quantities, token, setToken, setQuantities} = useContext(StoreContext);
 
   const uniqueItemsInCart = Object.values(quantities).filter(qty => qty > 0).length;
  const navigate = useNavigate();
@@ -16,7 +16,9 @@ const [active, setActive] = useState('home');
  const logout = () => {
   localStorage.removeItem('token');
   setToken("");
+  setQuantities({})
   navigate("/");
+ 
  }
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">

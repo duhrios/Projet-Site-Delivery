@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import axios from "axios";
 
 const Login = () => {
-const {setToken} = useContext(StoreContext);
+const {setToken, loadCartData} = useContext(StoreContext);
 const navigate = useNavigate();
 
 
@@ -33,6 +33,7 @@ const navigate = useNavigate();
          if (response.status === 200) {
            setToken(response.data.token);
            localStorage.setItem("token" , response.data.token);
+          await loadCartData(response.data.token);
           navigate("/")
          }else {
              toast.error("Não foi possível realizar login. Por favor tente novamente.");
