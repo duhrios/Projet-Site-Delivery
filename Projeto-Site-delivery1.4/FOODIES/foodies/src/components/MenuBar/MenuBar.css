@@ -1,0 +1,60 @@
+.active {
+
+    color: tomato !important;
+}
+
+dropdown-menu {
+    min-width: 180px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 0.5rem 0;
+}
+
+/* Cada item do dropdown */
+.dropdown-menu li {
+    list-style: none;
+    padding: 0;
+}
+
+/* Botões dentro do dropdown */
+.dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* Hover suave */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f5f5f5;
+    color: tomato;
+    border-radius: 5px;
+}
+
+/* Ícones */
+.dropdown-menu .dropdown-item i {
+    font-size: 1.1rem;
+}
+.dropdown-toggle {
+  cursor: pointer;
+}
+/* Avatar */
+.dropdown-toggle img {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;  
+  object-fit: cover;  
+  border: 2px solid #fff; 
+  cursor: pointer; 
+}
