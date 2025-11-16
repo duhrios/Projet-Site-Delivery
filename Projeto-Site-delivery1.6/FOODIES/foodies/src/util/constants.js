@@ -1,0 +1,2 @@
+export const MERCADOPAGO_KEY = "APP_USR-5c15d617-a827-48b3-b172-acbac570415b";
+
