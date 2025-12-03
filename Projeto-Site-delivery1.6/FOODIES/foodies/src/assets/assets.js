@@ -10,11 +10,13 @@ import alcolicas from "./beerIcon.png";
 import vegetariana from "./pratovegetariano.png";
 import login from "./Login.jpg";
 import avatar from "./avatar.jpg";
+import headers from "./header2.jpg";
 export const assets = {
   logo,
   cart,
   login,
-  avatar
+  avatar,
+  headers
 };
 
 export const categories = [

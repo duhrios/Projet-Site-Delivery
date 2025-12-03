@@ -75,84 +75,87 @@ const PlaceOrder = () => {
   };
 
   const onSubmitHandler = async (event) => { 
-    event.preventDefault();
-    console.log("🎯 INICIANDO PEDIDO...");
+  event.preventDefault();
+  console.log("🎯 INICIANDO PEDIDO...");
 
-    // Preparar itens do carrinho
-    const orderItems = cartItems.map(item => ({
-      foodId: item.id,
-      quantity: quantities[item.id]
-    }));
+  // ✅ CORREÇÃO: Preparar itens com TODOS OS DADOS
+  const orderItems = cartItems.map(item => ({
+    foodId: item.id,
+    name: item.name,        // ✅ Adicionar nome
+    quantity: quantities[item.id],
+    price: item.price       // ✅ Adicionar preço
+  }));
 
-    const orderData = {
-      items: orderItems,
-      address: data,
-      amount: total
-    };
-
-    try {
-      console.log("📤 Enviando pedido para backend...");
-      console.log("🔑 Token:", token ? "✅ Presente" : "❌ Ausente");
-      
-      // Chamar o backend
-      const response = await axios.post(
-        'http://localhost:8080/api/orders/create',
-        orderData,
-        { headers: { 'Authorization': `Bearer ${token}` } }
-      );
-
-      console.log("✅ Resposta do backend:", response.data);
-
-      // Pegar o preferenceId da resposta
-      const preferenceId = response.data.mercadopagoPreferenceId;
-
-      if (!preferenceId) {
-        console.error("❌ PreferenceId não encontrado na resposta!");
-        toast.error("Erro: PreferenceId não encontrado");
-        return;
-      }
-
-      console.log("🎯 PreferenceId recebido:", preferenceId);
-      
-      // Verificar se o SDK do Mercado Pago está carregado
-      if (!window.MercadoPago) {
-        console.error("❌ MercadoPago SDK não carregado!");
-        toast.error("Erro ao carregar sistema de pagamento");
-        return;
-      }
-
-      // Inicializar Mercado Pago
-      const mp = new window.MercadoPago(MERCADOPAGO_KEY, { 
-        locale: 'pt-BR' 
-      });
-      
-      console.log("💳 Abrindo checkout do Mercado Pago...");
-
-      // Abrir checkout
-      mp.checkout({
-        preference: { 
-          id: preferenceId 
-        },
-        autoOpen: true,
-      });
-      
-      console.log("✅ Checkout iniciado com sucesso!");
-      toast.success("Abrindo pagamento do Mercado Pago...");
-
-    } catch (error) {
-      console.error("❌ ERRO COMPLETO:", error);
-      console.error("❌ Response:", error.response);
-      
-      // Verificar se é erro de token expirado
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        toast.error("Sessão expirada! Faça login novamente.");
-        navigate('/login');
-        return;
-      }
-      
-      toast.error(error.response?.data?.message || "Erro ao processar pedido");
-    }
+  const orderData = {
+    items: orderItems,
+    address: data,
+    amount: total
   };
+
+  try {
+    console.log("📤 Enviando pedido para backend...");
+    console.log("🔑 Token:", token ? "✅ Presente" : "❌ Ausente");
+    console.log("📦 Dados do pedido:", orderData); // ✅ Ver o que está sendo enviado
+    
+    // Chamar o backend
+    const response = await axios.post(
+      'http://localhost:8080/api/orders/create',
+      orderData,
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
+
+    console.log("✅ Resposta do backend:", response.data);
+
+    // Pegar o preferenceId da resposta
+    const preferenceId = response.data.mercadopagoPreferenceId;
+
+    if (!preferenceId) {
+      console.error("❌ PreferenceId não encontrado na resposta!");
+      toast.error("Erro: PreferenceId não encontrado");
+      return;
+    }
+
+    console.log("🎯 PreferenceId recebido:", preferenceId);
+    
+    // Verificar se o SDK do Mercado Pago está carregado
+    if (!window.MercadoPago) {
+      console.error("❌ MercadoPago SDK não carregado!");
+      toast.error("Erro ao carregar sistema de pagamento");
+      return;
+    }
+
+    // Inicializar Mercado Pago
+    const mp = new window.MercadoPago(MERCADOPAGO_KEY, { 
+      locale: 'pt-BR' 
+    });
+    
+    console.log("💳 Abrindo checkout do Mercado Pago...");
+
+    // Abrir checkout
+    mp.checkout({
+      preference: { 
+        id: preferenceId 
+      },
+      autoOpen: true,
+    });
+    
+    console.log("✅ Checkout iniciado com sucesso!");
+    toast.success("Abrindo pagamento do Mercado Pago...");
+
+  } catch (error) {
+    console.error("❌ ERRO COMPLETO:", error);
+    console.error("❌ Response:", error.response);
+    
+    // Verificar se é erro de token expirado
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      toast.error("Sessão expirada! Faça login novamente.");
+      navigate('/login');
+      return;
+    }
+    
+    toast.error(error.response?.data?.message || "Erro ao processar pedido");
+  }
+};
 
   const verifyPayment = async(mercadopagoResponse) => {
     console.log("🔍 Verificando pagamento:", mercadopagoResponse);
@@ -191,7 +194,7 @@ const PlaceOrder = () => {
 
   const clearCart = async () => {
     try {
-      await axios.delete('http://localhost:8080/api/cart/clear', {
+      await axios.delete('http://localhost:8080/api/cart', {
         headers: {'Authorization': `Bearer ${token}`}
       });
       setQuantities({});

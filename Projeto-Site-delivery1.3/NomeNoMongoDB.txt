@@ -1,7 +1,0 @@
-Nome do banco de dados:
-
-foodies
-
-Nome do arquivo:
-
-foods
